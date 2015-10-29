@@ -10,6 +10,7 @@ var {
 
 var styles = require('./styles');
 var redditApi = require('../../api/reddit');
+var PostRow = require('./elements/postRow')
 
 var PostsView = React.createClass({
 
@@ -37,12 +38,7 @@ var PostsView = React.createClass({
 
   renderRow(rowData, sectionID, rowID) {
     return (
-      <TouchableHighlight
-        underlayColor='#dddddd'>
-        <View>
-          <Text>{rowData.title}</Text>
-        </View>
-      </TouchableHighlight>
+      <PostRow post={rowData}></PostRow>
     )
   },
 
