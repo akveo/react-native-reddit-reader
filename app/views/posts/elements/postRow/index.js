@@ -10,8 +10,8 @@ var {
   } = React;
 
 var styles = require('./styles');
-var redditApi = require('../../../../api/reddit');
 var Post = require('../../../post');
+var Comments = require('../../../comments');
 
 var PostRow = React.createClass({
 
@@ -26,7 +26,7 @@ var PostRow = React.createClass({
               {this.props.post.title}
             </Text>
             {imageEl}
-            <Text style={styles.postInfo}>
+            <Text style={styles.postInfo} onPress={this.showComments}>
               score {this.props.post.score || 0} | comments: {this.props.post.num_comments || 0} | by {this.props.post.author}
             </Text>
             <View style={styles.separator}/>
@@ -41,6 +41,14 @@ var PostRow = React.createClass({
       title: this.props.post.title,
       component: Post,
       passProps: {url: this.props.post.url}
+    });
+  },
+
+  showComments: function () {
+    this.props.navigator.push({
+      title: this.props.post.title,
+      component: Comments,
+      passProps: {post: this.props.post}
     });
   },
 
