@@ -10,6 +10,7 @@ var {
   } = React;
 
 var styles = require('./styles');
+var redditApi = require('../../../../api/reddit');
 var Post = require('../../../post');
 
 var PostRow = React.createClass({
@@ -17,7 +18,6 @@ var PostRow = React.createClass({
   render: function() {
     var thumbnail = this.props.post.preview && this.props.post.preview.images[0].source;
     var imageEl = this._getImageElement(thumbnail)
-    console.log(this.props.post);
     return (
       <TouchableHighlight onPress={this.showPost}>
         <View style={styles.container}>
