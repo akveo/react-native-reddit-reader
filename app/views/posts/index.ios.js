@@ -38,7 +38,7 @@ var PostsView = React.createClass({
 
   renderRow(rowData, sectionID, rowID) {
     return (
-      <PostRow post={rowData}></PostRow>
+      <PostRow post={rowData} navigator={this.props.navigator}></PostRow>
     )
   },
 

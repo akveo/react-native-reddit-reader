@@ -10,23 +10,17 @@ var {
   } = React;
 
 var styles = require('./styles');
+var Post = require('../../../post');
 
 var PostRow = React.createClass({
 
   render: function() {
     var thumbnail = this.props.post.preview && this.props.post.preview.images[0].source;
-    var imageEl = thumbnail ?
-      ( <View style={styles.imageContainer}>
-          <Image
-            style={this._getImageStyle(thumbnail)}
-            source={{uri: thumbnail.url}}
-          />
-        </View>) :
-      ( <View/>);
+    var imageEl = this._getImageElement(thumbnail)
     console.log(this.props.post);
     return (
-      <TouchableHighlight>
-        <View style={styles.container} onLayout={this.onLayout}>
+      <TouchableHighlight onPress={this.showPost}>
+        <View style={styles.container}>
           <View style={styles.postDetailsContainer}>
             <Text style={styles.postTitle}>
               {this.props.post.title}
@@ -40,6 +34,25 @@ var PostRow = React.createClass({
         </View>
       </TouchableHighlight>
     );
+  },
+
+  showPost: function () {
+    this.props.navigator.push({
+      title: this.props.post.title,
+      component: Post,
+      passProps: {url: this.props.post.url}
+    });
+  },
+
+  _getImageElement: function (image) {
+    return image ?
+      ( <View style={styles.imageContainer}>
+        <Image
+          style={this._getImageStyle(image)}
+          source={{uri: image.url}}
+          />
+      </View>) :
+      ( <View/>);
   },
 
   _getImageStyle: function (image) {
