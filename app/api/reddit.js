@@ -4,6 +4,7 @@ var jsonPostfix = '.json';
 function beutifyReplies(comments) {
   return comments.map(comment => {
     comment.replies = comment.replies ? comment.replies.data.children.map(reply => reply.data) : [];
+    comment.replies && beutifyReplies(comment.replies);
     return comment;
   });
 

@@ -95,7 +95,7 @@ var ParseHTML = React.createClass({
       .replace(/&gt;/g, '>')
       .replace(/&lt;/g, '<')
       .replace(/<br(>|\s|\/)*/g, '\n')
-      .replace(/\s+class="([^>]*)\s+"/, '');
+      .replace(/\sclass="([^>]*)"/, '');
   },
   render: function() {
     return (

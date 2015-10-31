@@ -62,10 +62,7 @@ var Comment = React.createClass({
       <View style={styles.container}>
         <Text style={styles.author}>{moment(this.props.comment.created*1000).fromNow()} by {this.props.comment.author}</Text>
         <View style={styles.postDetailsContainer}>
-          <ParseHTML
-            code={this.props.comment.body_html && he.unescape(he.unescape(this.props.comment.body_html))}
-            customTagToStyle={{'<div>':{}, '<p>': {}, '<a>': {textDecoration: 'underline'}}}
-          />
+          <Text>{this.props.comment.body}</Text>
           <Text style={styles.author} onPress={this.showComments}>
             score {this.props.comment.score || 0} | {this.props.comment.author}
           </Text>
