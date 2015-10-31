@@ -19,4 +19,8 @@ module.exports = StyleSheet.create({
     height: 0.5,
     backgroundColor: '#CCCCCC',
   },
+  repliesContainer: {
+    flex: 1,
+    paddingLeft: 5
+  }
 });

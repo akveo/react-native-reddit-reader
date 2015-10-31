@@ -16,16 +16,105 @@ var ParseHTML = require('../../ParseHTML');
 
 
 var CommentsList = React.createClass({
-
   getInitialState: function() {
+    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     return {
-      dataSource: new ListView.DataSource({rowHasChanged: (row1, row2) => row1 !== row2}),
-      loaded: false,
+      dataSource: ds.cloneWithRows(this.props.comments),
     };
+  },
+
+  componentWillUpdate: function (nextProps) {
+    console.log(nextProps);
+    nextProps.comments && this.state.dataSource.cloneWithRows(nextProps.comments);
+  },
+
+  render: function() {
+    console.log('ddadsasdasdasdas', this.props.comments);
+    console.log(this.state.dataSource);
+    return (
+     <ListView
+       style={styles.container}
+       dataSource={this.state.dataSource}
+       renderRow={this.renderComment}
+       />
+    );
+  },
+
+  renderComment: function(comment) {
+    return (
+      <Comment comment={comment}/>
+    )
+  }
+});
+
+var Comment = React.createClass({
+  getInitialState: function () {
+    return {
+      repliesShown: false
+    }
+  },
+
+  render: function() {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.author}>{moment(this.props.comment.created*1000).fromNow()} by {this.props.comment.author}</Text>
+        <View style={styles.postDetailsContainer}>
+          <Text>{this.props.comment.body}</Text>
+          <Text style={styles.author}>
+            score {this.props.comment.score || 0} | {this.props.comment.author}
+          </Text>
+          {this.props.comment.replies && this._renderRepliesSection()}
+          <View style={styles.separator}/>
+        </View>
+      </View>
+    );
+  },
+
+  _renderRepliesSection: function () {
+    return (
+      <View>
+        <TouchableHighlight onPress={this._toggleReplies}>
+          <Text>Show replies</Text>
+        </TouchableHighlight>
+        {this.state.repliesShown && this._renderReplies()}
+      </View>
+    )
+  },
+
+  _toggleReplies: function () {
+    this.setState({
+      repliesShown: !this.state.repliesShown
+    })
+  },
+
+  _renderReplies: function () {
+    return (
+      <View style={styles.repliesContainer}>
+        <CommentsList comments={this.props.comment.replies}></CommentsList>
+      </View>
+    )
+  }
+});
+
+var CommentsView = React.createClass({
+  comments: [],
+
+  getInitialState: function () {
+    return {
+      loaded: false
+    }
   },
 
   componentDidMount: function() {
     this.fetchData();
+  },
+
+  render: function() {
+    return (
+      <View style={styles.container}>
+        {this.renderComments()}
+      </View>
+    )
   },
 
   fetchData: function() {
@@ -33,44 +122,19 @@ var CommentsList = React.createClass({
       .then(comments => {
         console.log(comments);
         comments.sort((a,b) => b.score - a.score);
+        this.comments = comments;
         this.setState({
-          dataSource: this.state.dataSource.cloneWithRows(comments),
           loaded: true
         });
       })
       .done();
   },
 
-  renderRow(rowData, sectionID, rowID) {
-    return (
-     <Comment comment={rowData}/>
-    )
-  },
-
-  render() {
-    return (
-      <ListView
-        dataSource={this.state.dataSource}
-        renderRow={this.renderRow.bind(this)}/>
-    );
+  renderComments: function () {
+    return this.comments ? (<CommentsList comments={this.comments}></CommentsList>) : '';
   }
+
 });
 
-var Comment = React.createClass({
-  render: function() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.author}>{moment(this.props.comment.created*1000).fromNow()} by {this.props.comment.author}</Text>
-        <View style={styles.postDetailsContainer}>
-          <Text>{this.props.comment.body}</Text>
-          <Text style={styles.author} onPress={this.showComments}>
-            score {this.props.comment.score || 0} | {this.props.comment.author}
-          </Text>
-          <View style={styles.separator}/>
-        </View>
-      </View>
-    );
-  },
-});
 
-module.exports = CommentsList;
+module.exports = CommentsView;
