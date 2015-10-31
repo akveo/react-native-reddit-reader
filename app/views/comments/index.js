@@ -10,9 +10,12 @@ var {
 
 var styles = require('./styles');
 var redditApi = require('../../api/reddit');
-var Comment = require('./elements/comment');
+var moment = require('moment');
+var he = require('he');
+var ParseHTML = require('../../ParseHTML');
 
-var CommentsView = React.createClass({
+
+var CommentsList = React.createClass({
 
   getInitialState: function() {
     return {
@@ -53,4 +56,24 @@ var CommentsView = React.createClass({
   }
 });
 
-module.exports = CommentsView;
+var Comment = React.createClass({
+  render: function() {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.author}>{moment(this.props.comment.created*1000).fromNow()} by {this.props.comment.author}</Text>
+        <View style={styles.postDetailsContainer}>
+          <ParseHTML
+            code={this.props.comment.body_html && he.unescape(he.unescape(this.props.comment.body_html))}
+            customTagToStyle={{'<div>':{}, '<p>': {}, '<a>': {textDecoration: 'underline'}}}
+          />
+          <Text style={styles.author} onPress={this.showComments}>
+            score {this.props.comment.score || 0} | {this.props.comment.author}
+          </Text>
+          <View style={styles.separator}/>
+        </View>
+      </View>
+    );
+  },
+});
+
+module.exports = CommentsList;
