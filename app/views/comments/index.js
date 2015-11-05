@@ -24,13 +24,14 @@ var CommentsList = React.createClass({
   },
 
   componentWillUpdate: function (nextProps) {
-    console.log(nextProps);
-    nextProps.comments && this.state.dataSource.cloneWithRows(nextProps.comments);
+    this.state.dataSource = this.getDataSource(nextProps.comments);
+  },
+
+  getDataSource: function(comments): ListView.DataSource {
+    return this.state.dataSource.cloneWithRows(comments);
   },
 
   render: function() {
-    console.log('ddadsasdasdasdas', this.props.comments);
-    console.log(this.state.dataSource);
     return (
      <ListView
        style={styles.container}
@@ -59,7 +60,7 @@ var Comment = React.createClass({
       <View style={styles.container}>
         <Text style={styles.author}>{moment(this.props.comment.created*1000).fromNow()} by {this.props.comment.author}</Text>
         <View style={styles.postDetailsContainer}>
-          <Text>{this.props.comment.body}</Text>
+          <Text>{this.props.comment.body && he.unescape(this.props.comment.body)}</Text>
           <Text style={styles.author}>
             score {this.props.comment.score || 0} | {this.props.comment.author}
           </Text>

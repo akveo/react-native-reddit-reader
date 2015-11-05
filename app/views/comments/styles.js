@@ -21,6 +21,6 @@ module.exports = StyleSheet.create({
   },
   repliesContainer: {
     flex: 1,
-    paddingLeft: 5
+    paddingLeft: 20
   }
 });
