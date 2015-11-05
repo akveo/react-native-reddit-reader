@@ -2,25 +2,54 @@ var React = require('react-native');
 
 var {
   StyleSheet,
+  PixelRatio
   } = React;
 
 module.exports = StyleSheet.create({
-  container: {
-    flex: 1
+  rowContainer: {
+    flex: 1,
+    flexDirection: 'row'
   },
   author: {
     fontSize: 10,
-    marginBottom: 10,
-    marginTop: 4,
-    textAlign: 'center',
-    color: 'gray',
+    color: '#48BBEC',
+    fontWeight: 'bold',
   },
-  separator: {
-    height: 0.5,
-    backgroundColor: '#CCCCCC',
+  pointsAndTime: {
+    fontSize: 10,
+    color: 'lightslategray'
+  },
+  comment: {
+    flex: 1,
+    margin: 5,
+    marginBottom: 10,
+    paddingLeft: 4,
+    borderLeftColor: '#CACACA',
+    borderLeftWidth: 1 / PixelRatio.get(),
+  },
+  commentBody: {
+    marginTop: 5,
+    marginBottom: 5,
+    fontSize: 11,
+    color: '#444444'
+  },
+  repliesBtnText: {
+    fontSize: 10,
+    color: 'lightslategray',
   },
   repliesContainer: {
     flex: 1,
-    paddingLeft: 20
-  }
+    marginLeft: 5,
+    marginTop: 5
+  },
+  disclosure: {
+    width: 9,
+    height: 8,
+    marginLeft: 2,
+    marginRight: 8,
+    marginTop: 3
+  },
+  muted: {
+    opacity: 0.6,
+  },
 });

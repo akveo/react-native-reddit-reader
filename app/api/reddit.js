@@ -3,10 +3,10 @@ var jsonPostfix = '.json';
 
 function beutifyReplies(comments) {
   return comments.map(comment => {
-    comment.replies = comment.replies ? comment.replies.data.children.map(reply => reply.data) : [];
-    comment.replies && beutifyReplies(comment.replies);
+    comment.replies = comment.replies ? comment.replies.data.children.map(reply => reply.data).filter(c => c.body) : [];
+    beutifyReplies(comment.replies);
     return comment;
-  });
+  })
 
 }
 
@@ -20,7 +20,7 @@ module.exports = {
     var url = baseUrl + post.permalink + jsonPostfix;
     return fetch(url)
       .then(response => response.json())
-      .then(responseJson => responseJson[1].data.children.map(c => c.data))
+      .then(responseJson => responseJson[1].data.children.map(c => c.data).filter(c => c.body))
       .then(beutifyReplies)
   }
 };

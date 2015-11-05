@@ -6,7 +6,7 @@ var {
   View,
   Image,
   TouchableHighlight,
-  Dimensions
+  Dimensions,
   } = React;
 
 var styles = require('./styles');
@@ -29,7 +29,6 @@ var PostRow = React.createClass({
             <Text style={styles.postInfo} onPress={this.showComments}>
               score {this.props.post.score || 0} | comments: {this.props.post.num_comments || 0} | by {this.props.post.author}
             </Text>
-            <View style={styles.separator}/>
           </View>
         </View>
       </TouchableHighlight>
@@ -46,7 +45,7 @@ var PostRow = React.createClass({
 
   showComments: function () {
     this.props.navigator.push({
-      title: this.props.post.title,
+      title: 'Comments - ' + this.props.post.title,
       component: Comments,
       passProps: {post: this.props.post}
     });

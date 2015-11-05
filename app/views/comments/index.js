@@ -6,6 +6,7 @@ var {
   View,
   ListView,
   TouchableHighlight,
+  Image
   } = React;
 
 var styles = require('./styles');
@@ -13,6 +14,9 @@ var redditApi = require('../../api/reddit');
 var moment = require('moment');
 var he = require('he');
 var ParseHTML = require('../../ParseHTML');
+
+var disclosure90= require('image!disclosure90');
+var disclosure = require('image!disclosure');
 
 
 var CommentsList = React.createClass({
@@ -51,35 +55,40 @@ var CommentsList = React.createClass({
 var Comment = React.createClass({
   getInitialState: function () {
     return {
-      repliesShown: false
+      repliesShown: true
     }
   },
 
   render: function() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.author}>{moment(this.props.comment.created*1000).fromNow()} by {this.props.comment.author}</Text>
+      <View style={styles.comment}>
+        <View style={styles.rowContainer}>
+          <Text style={styles.author}>{this.props.comment.author + ' '}</Text>
+          <Text style={styles.pointsAndTime}>{this.props.comment.score || 0} points {moment(this.props.comment.created_utc*1000).fromNow()}</Text>
+        </View>
         <View style={styles.postDetailsContainer}>
-          <Text>{this.props.comment.body && he.unescape(this.props.comment.body)}</Text>
-          <Text style={styles.author}>
-            score {this.props.comment.score || 0} | {this.props.comment.author}
-          </Text>
+          <Text style={styles.commentBody}>{this.props.comment.body && he.unescape(this.props.comment.body)}</Text>
           {this.props.comment.replies && this._renderRepliesSection()}
-          <View style={styles.separator}/>
         </View>
       </View>
     );
   },
 
   _renderRepliesSection: function () {
-    return (
-      <View>
-        <TouchableHighlight onPress={this._toggleReplies}>
-          <Text>Show replies</Text>
-        </TouchableHighlight>
-        {this.state.repliesShown && this._renderReplies()}
-      </View>
-    )
+    var repliesSection = this.props.comment.replies.length ?
+      (<View>
+        <View style={styles.rowContainer}>
+          <Text onPress={this._toggleReplies} style={styles.repliesBtnText}>
+            replies ({this.props.comment.replies.length})
+          </Text>
+          <Image
+            style={[styles.disclosure, styles.muted]}
+            source={this.state.repliesShown ? disclosure90 : disclosure}
+          />
+        </View>
+          {this.state.repliesShown && this._renderReplies()}
+      </View>) : <View/>;
+    return repliesSection;
   },
 
   _toggleReplies: function () {
@@ -111,11 +120,7 @@ var CommentsView = React.createClass({
   },
 
   render: function() {
-    return (
-      <View style={styles.container}>
-        {this.renderComments()}
-      </View>
-    )
+    return this.comments ? (<CommentsList comments={this.comments}></CommentsList>) : '';
   },
 
   fetchData: function() {
@@ -129,12 +134,7 @@ var CommentsView = React.createClass({
         });
       })
       .done();
-  },
-
-  renderComments: function () {
-    return this.comments ? (<CommentsList comments={this.comments}></CommentsList>) : '';
   }
-
 });
 
 
