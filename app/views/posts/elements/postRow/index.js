@@ -13,11 +13,14 @@ var styles = require('./styles');
 var Post = require('../../../post');
 var Comments = require('../../../comments');
 
+var commentsIcon = require('image!comments');
+
 var PostRow = React.createClass({
 
   render: function() {
     var thumbnail = this.props.post.preview && this.props.post.preview.images[0].source;
     var imageEl = this._getImageElement(thumbnail)
+    console.log(this.props.post)
     return (
       <TouchableHighlight onPress={this.showPost}>
         <View style={styles.container}>
@@ -26,9 +29,25 @@ var PostRow = React.createClass({
               {this.props.post.title}
             </Text>
             {imageEl}
-            <Text style={styles.postInfo} onPress={this.showComments}>
-              score {this.props.post.score || 0} | comments: {this.props.post.num_comments || 0} | by {this.props.post.author}
-            </Text>
+            <View style={styles.postStats} onPress={this.showComments}>
+              <Text style={styles.statsTextStyles}>{this.props.post.score || 0} points</Text>
+              <View style={styles.dotDelimeter}><Text style={styles.statsTextStyles}> . </Text></View>
+              <Text style={styles.statsTextStyles}>{this.props.post.num_comments || 0} comments</Text>
+              <View style={styles.dotDelimeter}><Text style={styles.statsTextStyles}> . </Text></View>
+              <Text style={[styles.statsTextStyles, styles.blue]}>{'/r/' + this.props.post.subreddit}</Text>
+              <View style={styles.dotDelimeter}><Text style={styles.statsTextStyles}> . </Text></View>
+              <Text style={[styles.statsTextStyles, styles.blue]}>{this.props.post.author}</Text>
+            </View>
+            <View style={[styles.container, styles.commentsSection]} onPress={this.showComments}>
+              <Image
+                style={styles.commentsIcon}
+                source={commentsIcon}
+                />
+              <View style={styles.readComments}>
+                <Text style={[styles.statsTextStyles]}>  Read comments</Text>
+              </View>
+            </View>
+            <View style={styles.separator}/>
           </View>
         </View>
       </TouchableHighlight>
@@ -63,7 +82,7 @@ var PostRow = React.createClass({
   },
 
   _getImageStyle: function (image) {
-    var width = Math.min(Dimensions.get('window').width, image.width);
+    var width = Dimensions.get('window').width;
     var height = image.height * width / image.width;
     return {width: width, height: height};
   }
