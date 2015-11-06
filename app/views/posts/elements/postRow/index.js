@@ -19,38 +19,39 @@ var PostRow = React.createClass({
 
   render: function() {
     var thumbnail = this.props.post.preview && this.props.post.preview.images[0].source;
-    var imageEl = this._getImageElement(thumbnail)
-    console.log(this.props.post)
+    var imageEl = this._getImageElement(thumbnail);
     return (
-      <TouchableHighlight onPress={this.showPost}>
         <View style={styles.container}>
-          <View style={styles.postDetailsContainer}>
-            <Text style={styles.postTitle}>
-              {this.props.post.title}
-            </Text>
-            {imageEl}
-            <View style={styles.postStats} onPress={this.showComments}>
-              <Text style={styles.statsTextStyles}>{this.props.post.score || 0} points</Text>
-              <View style={styles.dotDelimeter}><Text style={styles.statsTextStyles}> . </Text></View>
-              <Text style={styles.statsTextStyles}>{this.props.post.num_comments || 0} comments</Text>
-              <View style={styles.dotDelimeter}><Text style={styles.statsTextStyles}> . </Text></View>
-              <Text style={[styles.statsTextStyles, styles.blue]}>{'/r/' + this.props.post.subreddit}</Text>
-              <View style={styles.dotDelimeter}><Text style={styles.statsTextStyles}> . </Text></View>
-              <Text style={[styles.statsTextStyles, styles.blue]}>{this.props.post.author}</Text>
-            </View>
-            <View style={[styles.container, styles.commentsSection]} onPress={this.showComments}>
-              <Image
-                style={styles.commentsIcon}
-                source={commentsIcon}
-                />
-              <View style={styles.readComments}>
-                <Text style={[styles.statsTextStyles]}>  Read comments</Text>
+            <TouchableHighlight onPress={this.showPost}>
+              <View style={styles.container}>
+                <Text style={styles.postTitle}>
+                  {this.props.post.title}
+                </Text>
+                {imageEl}
+                <View style={styles.postStats} onPress={this.showComments}>
+                  <Text style={styles.statsTextStyles}>{this.props.post.score || 0} points</Text>
+                  <View style={styles.dotDelimeter}><Text style={styles.statsTextStyles}> . </Text></View>
+                  <Text style={styles.statsTextStyles}>{this.props.post.num_comments || 0} comments</Text>
+                  <View style={styles.dotDelimeter}><Text style={styles.statsTextStyles}> . </Text></View>
+                  <Text style={[styles.statsTextStyles, styles.blue]}>{'/r/' + this.props.post.subreddit}</Text>
+                  <View style={styles.dotDelimeter}><Text style={styles.statsTextStyles}> . </Text></View>
+                  <Text style={[styles.statsTextStyles, styles.blue]}>{this.props.post.author}</Text>
+                </View>
               </View>
-            </View>
+            </TouchableHighlight>
+            <TouchableHighlight onPress={this.showComments}>
+              <View style={[styles.container, styles.commentsSection]} onPress={this.showComments}>
+                <Image
+                  style={styles.commentsIcon}
+                  source={commentsIcon}
+                  />
+                <View style={styles.readComments}>
+                  <Text style={[styles.statsTextStyles]}>  Read comments</Text>
+                </View>
+              </View>
+            </TouchableHighlight>
             <View style={styles.separator}/>
-          </View>
         </View>
-      </TouchableHighlight>
     );
   },
 

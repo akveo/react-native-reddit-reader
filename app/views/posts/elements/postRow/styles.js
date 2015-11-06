@@ -10,18 +10,12 @@ var {
 module.exports = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: 'white',
   },
   imageContainer: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center'
-  },
-  postDetailsContainer:{
-    flex: 1,
   },
   postTitle: {
     fontSize: 15,
@@ -34,7 +28,6 @@ module.exports = StyleSheet.create({
   },
   postStats: {
     marginTop: 6,
-    marginBottom: 5,
     marginLeft: 5,
     flexDirection: 'row'
   },
@@ -44,9 +37,11 @@ module.exports = StyleSheet.create({
     textAlign: 'left'
   },
   commentsSection: {
-    marginBottom: 5,
-    marginLeft: 4,
+    paddingBottom: 5,
+    paddingTop: 5,
+    paddingLeft: 4,
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'flex-start'
   },
   commentsIcon: {

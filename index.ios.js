@@ -20,7 +20,9 @@ var ReactNativeRedditReader = React.createClass({
     return (
       <NavigatorIOS
         style={styles.container}
-        tintColor='#FF6600'
+        tintColor='#48BBEC'
+        titleTextColor='#48BBEC'
+        translucent={true}
         initialRoute={{
           title: 'REDDIT',
           component: PostsView,
