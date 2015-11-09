@@ -8,9 +8,14 @@ var {
   TouchableHighlight,
   } = React;
 
+var {
+  RefresherListView,
+  LoadingBarIndicator
+  } = require('react-native-refresher');
+
 var styles = require('./styles');
 var redditApi = require('../../api/reddit');
-var PostRow = require('./elements/postRow')
+var PostRow = require('./elements/postRow');
 
 var PostsView = React.createClass({
 
@@ -26,14 +31,13 @@ var PostsView = React.createClass({
   },
 
   fetchData: function() {
-    redditApi.fetchHot()
+    return redditApi.fetchHot()
       .then(posts => {
         this.setState({
           dataSource: this.state.dataSource.cloneWithRows(posts),
           loaded: true
         });
       })
-      .done();
   },
 
   renderRow(rowData, sectionID, rowID) {
@@ -44,9 +48,13 @@ var PostsView = React.createClass({
 
   render() {
     return (
-      <ListView
+      <RefresherListView
         dataSource={this.state.dataSource}
-        renderRow={this.renderRow.bind(this)}/>
+        onRefresh={this.fetchData}
+        renderRow={this.renderRow.bind(this)}
+        indicator={<LoadingBarIndicator />}
+        refreshOnRelease={true}
+        />
     );
   }
 });

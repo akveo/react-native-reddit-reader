@@ -8,6 +8,7 @@
   "dependencies": {
     "he": "^0.5.0",
     "moment": "^2.10.6",
-    "react-native": "^0.13.2"
+    "react-native": "^0.13.2",
+    "react-native-refresher": "git+https://github.com/m-hosoi/react-native-refresher.git"
   }
 }
