@@ -7,14 +7,22 @@ function beutifyReplies(comments) {
     beutifyReplies(comment.replies);
     return comment;
   })
+}
 
+function postsResponseToJson(response) {
+  return response.json()
+  .then((responseJson) => responseJson.data.children.map(c => c.data))
 }
 
 module.exports = {
   fetchHot: function () {
     return fetch(baseUrl + jsonPostfix)
-      .then((response) => response.json())
-      .then((responseJson) => responseJson.data.children.map(c => c.data));
+      .then(postsResponseToJson);
+  },
+  fetchNext(lastPostName) {
+    return fetch(
+      baseUrl + jsonPostfix, {count: 25, after: lastPostName})
+      .then(postsResponseToJson);
   },
   fetchComments: function (post) {
     var url = baseUrl + post.permalink + jsonPostfix;
