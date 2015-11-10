@@ -20,8 +20,7 @@ module.exports = {
       .then(postsResponseToJson);
   },
   fetchNext(lastPostName) {
-    return fetch(
-      baseUrl + jsonPostfix, {count: 25, after: lastPostName})
+    return fetch(baseUrl + jsonPostfix +'?count=' + 25 + '&after=' + lastPostName)
       .then(postsResponseToJson);
   },
   fetchComments: function (post) {
