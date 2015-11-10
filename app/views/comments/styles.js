@@ -6,6 +6,12 @@ var {
   } = React;
 
 module.exports = StyleSheet.create({
+  container: {
+    flex:1,
+  },
+  viewContainer: {
+    paddingTop: 64,
+  },
   rowContainer: {
     flex: 1,
     flexDirection: 'row'
@@ -52,4 +58,12 @@ module.exports = StyleSheet.create({
   muted: {
     opacity: 0.6,
   },
+  activityIndicator: {
+    height: 80
+  },
+  activityIndicatorContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
 });

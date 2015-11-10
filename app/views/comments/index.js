@@ -6,7 +6,8 @@ var {
   View,
   ListView,
   TouchableHighlight,
-  Image
+  Image,
+  ActivityIndicatorIOS
   } = React;
 
 var styles = require('./styles');
@@ -119,10 +120,6 @@ var CommentsView = React.createClass({
     this.fetchData();
   },
 
-  render: function() {
-    return this.comments ? (<CommentsList comments={this.comments}></CommentsList>) : '';
-  },
-
   fetchData: function() {
     redditApi.fetchComments(this.props.post)
       .then(comments => {
@@ -134,7 +131,29 @@ var CommentsView = React.createClass({
         });
       })
       .done();
-  }
+  },
+
+  renderComments: function () {
+    return <CommentsList comments={this.comments}></CommentsList>;
+  },
+
+  renderLoader: function () {
+    return (
+      <View style={styles.activityIndicatorContainer}>
+        <ActivityIndicatorIOS style={styles.activityIndicator} size="large" color="#48BBEC" />
+      </View>
+    )
+  },
+
+  render: function() {
+      return (
+        <View style={[styles.container, styles.viewContainer]}>
+          {this.state.loaded ? this.renderComments() : this.renderLoader()}
+        </View>
+      )
+  },
+
+
 });
 
 
