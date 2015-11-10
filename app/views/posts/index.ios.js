@@ -92,11 +92,49 @@ var PostRow = React.createClass({
   }
 });
 
+var PostList = React.createClass({
+  getInitialState: function() {
+    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    return {
+      dataSource: ds.cloneWithRows(this.props.posts),
+      loading: true
+    };
+  },
+
+  componentWillUpdate: function (nextProps) {
+    this.state.dataSource = this.getDataSource(nextProps.posts);
+  },
+
+  getDataSource: function(posts): ListView.DataSource {
+    return this.state.dataSource.cloneWithRows(posts);
+  },
+
+  renderPostRow(rowData, sectionID, rowID) {
+    return (
+      <PostRow post={rowData} navigator={this.props.navigator}></PostRow>
+    )
+  },
+
+  render() {
+    return (
+      <ListView
+        dataSource={this.state.dataSource}
+        renderRow={this.renderPostRow}
+        canLoadMore={true}
+        isLoadingMore={this.state.loading}
+        refreshOnRelease={true}
+        renderScrollComponent={props => <InfiniteScrollView {...props} />}
+        onLoadMoreAsync={this.loadMore}
+        />
+    );
+  }
+});
+
 var PostsView = React.createClass({
 
   getInitialState: function() {
     return {
-      dataSource: new ListView.DataSource({rowHasChanged: (row1, row2) => row1 !== row2}),
+      posts: [],
       loading: true
     };
   },
@@ -110,7 +148,7 @@ var PostsView = React.createClass({
     return redditApi.fetchHot()
       .then(posts => {
         this.setState({
-          dataSource: this.state.dataSource.cloneWithRows(posts),
+          posts: posts,
           loading: false
         });
       })
@@ -121,38 +159,18 @@ var PostsView = React.createClass({
     return redditApi.fetchNext(this.getLastPost().name)
       .then(posts => {
         this.setState({
-          dataSource: this.state.dataSource.cloneWithRows(this.getPosts().concat(posts)),
+          posts: this.state.posts.concat(posts),
           loading: false
         });
       })
   },
 
   getLastPost: function () {
-    return this.getPosts()[this.state.dataSource.getRowCount() - 1];
-  },
-
-  getPosts: function () {
-    return this.state.dataSource._dataBlob.s1;
-  },
-
-  renderRow(rowData, sectionID, rowID) {
-    return (
-      <PostRow post={rowData} navigator={this.props.navigator}></PostRow>
-    )
+    return this.state.posts[this.state.posts.length - 1];
   },
 
   render() {
-    return (
-      <ListView
-        dataSource={this.state.dataSource}
-        renderRow={this.renderRow.bind(this)}
-        canLoadMore={true}
-        isLoadingMore={this.state.loading}
-        refreshOnRelease={true}
-        renderScrollComponent={props => <InfiniteScrollView {...props} />}
-        onLoadMoreAsync={this.loadMore}
-        />
-    );
+    return (<PostList posts={this.state.posts} navigator={this.props.navigator}/>);
   }
 });
 
