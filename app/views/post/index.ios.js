@@ -12,7 +12,7 @@ var {
 
 var styles = require('./styles');
 
-var Post = React.createClass({
+var PostView = React.createClass({
 
   render: function() {
     return (
@@ -28,4 +28,4 @@ var Post = React.createClass({
   }
 });
 
-module.exports = Post;
+module.exports = PostView;

@@ -15,10 +15,54 @@ var redditApi = require('../../api/reddit');
 var moment = require('moment');
 var he = require('he');
 var ParseHTML = require('../../ParseHTML');
-
 var disclosure90= require('image!disclosure90');
 var disclosure = require('image!disclosure');
 
+var CommentsView = React.createClass({
+  comments: [],
+
+  getInitialState: function () {
+    return {
+      loaded: false
+    }
+  },
+
+  componentDidMount: function() {
+    this.fetchData();
+  },
+
+  fetchData: function() {
+    redditApi.fetchComments(this.props.post)
+      .then(comments => {
+        comments.sort((a,b) => b.score - a.score);
+        this.comments = comments;
+        this.setState({
+          loaded: true
+        });
+      })
+      .done();
+  },
+
+  renderComments: function () {
+    return <CommentsList comments={this.comments}></CommentsList>;
+  },
+
+  renderLoader: function () {
+    return (
+      <View style={styles.activityIndicatorContainer}>
+        <ActivityIndicatorIOS style={styles.activityIndicator} size="large" color="#48BBEC" />
+      </View>
+    )
+  },
+
+  render: function() {
+    return (
+      <View style={[styles.container, styles.viewContainer]}>
+        {this.state.loaded ? this.renderComments() : this.renderLoader()}
+      </View>
+    )
+  },
+});
 
 var CommentsList = React.createClass({
   getInitialState: function() {
@@ -106,55 +150,5 @@ var Comment = React.createClass({
     )
   }
 });
-
-var CommentsView = React.createClass({
-  comments: [],
-
-  getInitialState: function () {
-    return {
-      loaded: false
-    }
-  },
-
-  componentDidMount: function() {
-    this.fetchData();
-  },
-
-  fetchData: function() {
-    redditApi.fetchComments(this.props.post)
-      .then(comments => {
-        console.log(comments);
-        comments.sort((a,b) => b.score - a.score);
-        this.comments = comments;
-        this.setState({
-          loaded: true
-        });
-      })
-      .done();
-  },
-
-  renderComments: function () {
-    return <CommentsList comments={this.comments}></CommentsList>;
-  },
-
-  renderLoader: function () {
-    return (
-      <View style={styles.activityIndicatorContainer}>
-        <ActivityIndicatorIOS style={styles.activityIndicator} size="large" color="#48BBEC" />
-      </View>
-    )
-  },
-
-  render: function() {
-      return (
-        <View style={[styles.container, styles.viewContainer]}>
-          {this.state.loaded ? this.renderComments() : this.renderLoader()}
-        </View>
-      )
-  },
-
-
-});
-
 
 module.exports = CommentsView;

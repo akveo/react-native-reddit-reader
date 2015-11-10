@@ -14,121 +14,9 @@ var InfiniteScrollView = require('react-native-infinite-scroll-view');
 
 var styles = require('./styles');
 var redditApi = require('../../api/reddit');
-var Post = require('../post');
+var PostView = require('../post');
 var Comments = require('../comments');
-
 var commentsIcon = require('image!comments');
-
-var PostRow = React.createClass({
-  render: function() {
-    var thumbnail = this.props.post.preview && this.props.post.preview.images[0].source;
-    var imageEl = this._getImageElement(thumbnail);
-    return (
-      <View style={styles.container}>
-        <TouchableHighlight onPress={this.showPost}>
-          <View style={styles.container}>
-            <Text style={styles.postTitle}>
-              {this.props.post.title}
-            </Text>
-            {imageEl}
-            <View style={styles.postStats} onPress={this.showComments}>
-              <Text style={styles.statsTextStyles}>{this.props.post.score || 0} points</Text>
-              <View style={styles.dotDelimeter}><Text style={styles.statsTextStyles}> . </Text></View>
-              <Text style={styles.statsTextStyles}>{this.props.post.num_comments || 0} comments</Text>
-              <View style={styles.dotDelimeter}><Text style={styles.statsTextStyles}> . </Text></View>
-              <Text style={[styles.statsTextStyles, styles.blue]}>{'/r/' + this.props.post.subreddit}</Text>
-              <View style={styles.dotDelimeter}><Text style={styles.statsTextStyles}> . </Text></View>
-              <Text style={[styles.statsTextStyles, styles.blue]}>{this.props.post.author}</Text>
-            </View>
-          </View>
-        </TouchableHighlight>
-        <TouchableHighlight onPress={this.showComments}>
-          <View style={[styles.container, styles.commentsSection]} onPress={this.showComments}>
-            <Image
-              style={styles.commentsIcon}
-              source={commentsIcon}
-              />
-            <View style={styles.readComments}>
-              <Text style={[styles.statsTextStyles]}>  Read comments</Text>
-            </View>
-          </View>
-        </TouchableHighlight>
-        <View style={styles.separator}/>
-      </View>
-    );
-  },
-
-  showPost: function () {
-    this.props.navigator.push({
-      title: this.props.post.title,
-      component: Post,
-      passProps: {url: this.props.post.url}
-    });
-  },
-
-  showComments: function () {
-    this.props.navigator.push({
-      title: 'Comments - ' + this.props.post.title,
-      component: Comments,
-      passProps: {post: this.props.post}
-    });
-  },
-
-  _getImageElement: function (image) {
-    return image ?
-      ( <View style={styles.imageContainer}>
-        <Image
-          style={this._getImageStyle(image)}
-          source={{uri: image.url}}
-          />
-      </View>) :
-      ( <View/>);
-  },
-
-  _getImageStyle: function (image) {
-    var width = Dimensions.get('window').width;
-    var height = image.height * width / image.width;
-    return {width: width, height: height};
-  }
-});
-
-var PostList = React.createClass({
-  getInitialState: function() {
-    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    return {
-      dataSource: ds.cloneWithRows(this.props.posts),
-      loading: true
-    };
-  },
-
-  componentWillUpdate: function (nextProps) {
-    this.state.dataSource = this.getDataSource(nextProps.posts);
-  },
-
-  getDataSource: function(posts): ListView.DataSource {
-    return this.state.dataSource.cloneWithRows(posts);
-  },
-
-  renderPostRow(rowData, sectionID, rowID) {
-    return (
-      <PostRow post={rowData} navigator={this.props.navigator}></PostRow>
-    )
-  },
-
-  render() {
-    return (
-      <ListView
-        dataSource={this.state.dataSource}
-        renderRow={this.renderPostRow}
-        canLoadMore={true}
-        isLoadingMore={this.state.loading}
-        refreshOnRelease={true}
-        renderScrollComponent={props => <InfiniteScrollView {...props} />}
-        onLoadMoreAsync={this.loadMore}
-        />
-    );
-  }
-});
 
 var PostsView = React.createClass({
 
@@ -170,7 +58,118 @@ var PostsView = React.createClass({
   },
 
   render() {
-    return (<PostList posts={this.state.posts} navigator={this.props.navigator}/>);
+    return (<PostList posts={this.state.posts} loadMore={this.loadMore} navigator={this.props.navigator}/>);
+  }
+});
+
+var PostList = React.createClass({
+  getInitialState: function() {
+    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    return {
+      dataSource: ds.cloneWithRows(this.props.posts),
+      loading: true
+    };
+  },
+
+  componentWillUpdate: function (nextProps) {
+    this.state.dataSource = this.getDataSource(nextProps.posts);
+  },
+
+  getDataSource: function(posts): ListView.DataSource {
+    return this.state.dataSource.cloneWithRows(posts);
+  },
+
+  renderPost(rowData, sectionID, rowID) {
+    return (
+      <Post post={rowData} navigator={this.props.navigator}></Post>
+    )
+  },
+
+  render() {
+    return (
+      <ListView
+        dataSource={this.state.dataSource}
+        renderRow={this.renderPost}
+        canLoadMore={true}
+        isLoadingMore={this.state.loading}
+        refreshOnRelease={true}
+        renderScrollComponent={props => <InfiniteScrollView {...props} />}
+        onLoadMoreAsync={this.props.loadMore}
+        />
+    );
+  }
+});
+
+var Post = React.createClass({
+  render: function() {
+    var thumbnail = this.props.post.preview && this.props.post.preview.images[0].source;
+    var imageEl = this._getImageElement(thumbnail);
+    return (
+      <View style={styles.container}>
+        <TouchableHighlight onPress={this.showPost}>
+          <View style={styles.container}>
+            <Text style={styles.postTitle}>
+              {this.props.post.title}
+            </Text>
+            {imageEl}
+            <View style={styles.postStats} onPress={this.showComments}>
+              <Text style={styles.statsTextStyles}>{this.props.post.score || 0} points</Text>
+              <View style={styles.dotDelimeter}><Text style={styles.statsTextStyles}> . </Text></View>
+              <Text style={styles.statsTextStyles}>{this.props.post.num_comments || 0} comments</Text>
+              <View style={styles.dotDelimeter}><Text style={styles.statsTextStyles}> . </Text></View>
+              <Text style={[styles.statsTextStyles, styles.blue]}>{'/r/' + this.props.post.subreddit}</Text>
+              <View style={styles.dotDelimeter}><Text style={styles.statsTextStyles}> . </Text></View>
+              <Text style={[styles.statsTextStyles, styles.blue]}>{this.props.post.author}</Text>
+            </View>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight onPress={this.showComments}>
+          <View style={[styles.container, styles.commentsSection]} onPress={this.showComments}>
+            <Image
+              style={styles.commentsIcon}
+              source={commentsIcon}
+              />
+            <View style={styles.readComments}>
+              <Text style={[styles.statsTextStyles]}>  Read comments</Text>
+            </View>
+          </View>
+        </TouchableHighlight>
+        <View style={styles.separator}/>
+      </View>
+    );
+  },
+
+  showPost: function () {
+    this.props.navigator.push({
+      title: this.props.post.title,
+      component: PostView,
+      passProps: {url: this.props.post.url}
+    });
+  },
+
+  showComments: function () {
+    this.props.navigator.push({
+      title: 'Comments - ' + this.props.post.title,
+      component: Comments,
+      passProps: {post: this.props.post}
+    });
+  },
+
+  _getImageElement: function (image) {
+    return image ?
+      ( <View style={styles.imageContainer}>
+        <Image
+          style={this._getImageStyle(image)}
+          source={{uri: image.url}}
+          />
+      </View>) :
+      ( <View/>);
+  },
+
+  _getImageStyle: function (image) {
+    var width = Dimensions.get('window').width;
+    var height = image.height * width / image.width;
+    return {width: width, height: height};
   }
 });
 
