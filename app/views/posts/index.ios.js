@@ -16,7 +16,7 @@ var styles = require('./styles');
 var redditApi = require('../../api/reddit');
 var PostView = require('../post');
 var Comments = require('../comments');
-var commentsIcon = require('image!comments');
+var commentsIcon = require('./images/comments.png');
 
 var PostsView = React.createClass({
 

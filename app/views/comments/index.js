@@ -15,8 +15,8 @@ var redditApi = require('../../api/reddit');
 var moment = require('moment');
 var he = require('he');
 var ParseHTML = require('../../ParseHTML');
-var disclosure90= require('image!disclosure90');
-var disclosure = require('image!disclosure');
+var disclosure90= require('./images/disclosure90.png');
+var disclosure = require('./images/disclosure.png');
 
 var CommentsView = React.createClass({
   comments: [],
