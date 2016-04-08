@@ -1,3 +1,0 @@
-rootProject.name = 'ReactNativeRedditReader'
-
-include ':app'
