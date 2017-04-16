@@ -5,7 +5,7 @@ ReactNativeRedditReader
 
 ![alt tag](http://i.imgur.com/sh7JnZG.gif)
 
-##Running
+## Running
 1. Run `npm install` inside the folder, this will install react-native and other dependencies and will take some time.
 
 2. Open the project file at `ios/ReactNativeRedditReader.xcodeproj`
